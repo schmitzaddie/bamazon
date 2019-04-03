@@ -43,16 +43,16 @@ function customerShop() {
                 message: "How many would you like to purchase?"
             }
         ]).then(function (answer) {
-            console.log(answer);
+            // console.log(answer);
 
             var quantity = parseInt(answer.quantity);
             var product = parseInt(answer.product);
 
-            console.log(quantity);
-            console.log(product);
+            // console.log(quantity);
+            // console.log(product);
 
             connection.query('SELECT * FROM products', function (err, data) {
-                console.log(data);
+                // console.log(data);
                 if (err) throw err;
 
                 for (var i = 0; i < data.length; i++) {
