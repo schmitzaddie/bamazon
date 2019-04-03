@@ -26,7 +26,7 @@ function productList() {
         console.log("");
         customerShop();
     });
-}
+};
 
 function customerShop() {
     connection.query("SELECT * FROM products", function (err, data) {
@@ -43,31 +43,36 @@ function customerShop() {
                 message: "How many would you like to purchase?"
             }
         ]).then(function (answer) {
+            console.log(answer);
 
             var quantity = parseInt(answer.quantity);
             var product = parseInt(answer.product);
 
-            connection.query('SELECT * FROM products', function (err, product) {
+            console.log(quantity);
+            console.log(product);
+
+            connection.query('SELECT * FROM products', function (err, data) {
+                console.log(data);
                 if (err) throw err;
 
-                for (var i = 0; i < product.length; i++) {
-                    if (quantity <= product[i].stock_quantity && product === product[i].item_id) {
+                for (var i = 0; i < data.length; i++) {
+                    if (quantity <= data[i].stock_quantity && product === data[i].item_id) {
 
                         connection.query(
                             "UPDATE products SET ? WHERE ?",
                             [
                                 {
-                                    stock_quantity: (product[i].stock_quantity - quantity)
+                                    stock_quantity: (data[i].stock_quantity - quantity)
                                 },
                                 {
-                                    id: product[i].item_id
+                                    item_id: data[i].item_id
                                 }
                             ],
                             function (err, update) {
                                 if (err) throw err;
-                                console.log("Thanks for purchasing " + quantity + " of " + product[i].product_name);
+                                console.log("Thanks for purchasing!");
                             }
-                        )
+                        );
 
                     } else if (quantity > data[i].stock_quantity && product === data[i].item_id) {
                         inquirer.prompt([
@@ -77,9 +82,9 @@ function customerShop() {
                                 message: "I'm sorry - we don't have enough in stock!",
                                 choices: ["Purchase a different quantity", "Purchase a different product", "Stop shopping"]
                             }
-                        ]).then(function (notEnough) {
+                        ]).then(function (tooLittle) {
 
-                            if (overQuantity.tooMany === "Purchase a different quantity" || overQuantity.tooMany === "Purchase a different product") {
+                            if (tooLittle.notEnough === "Purchase a different quantity" || tooLittle.notEnough === "Purchase a different product") {
                                 customerShop();
                             
                             } else {
